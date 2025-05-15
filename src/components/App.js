@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import './../styles/App.css';
 
@@ -14,6 +13,7 @@ const App = () => {
     const timer = setTimeout(() => {
       if (inputValue.trim() === '') {
         setSuggestions([]);
+        setShowSuggestions(false);
         return;
       }
 
@@ -22,11 +22,7 @@ const App = () => {
       );
       setSuggestions(filteredFruits);
       setActiveSuggestion(0);
-      
-      // Show suggestions when there's input
-      if (inputValue) {
-        setShowSuggestions(true);
-      }
+      setShowSuggestions(true);
     }, 300);
 
     return () => clearTimeout(timer);
@@ -116,9 +112,9 @@ const App = () => {
                   </li>
                 ))
               ) : (
-                <div className="no-suggestions" data-testid="no-suggestions">
+                <li className="no-suggestions" data-testid="no-suggestions">
                   <em>No suggestions found</em>
-                </div>
+                </li>
               )}
             </ul>
           )}
