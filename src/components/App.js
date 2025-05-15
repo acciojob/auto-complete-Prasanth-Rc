@@ -9,14 +9,11 @@ const App = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (inputValue.trim() === '') {
-        setSuggestions([]);
-        return;
-      }
-
-      const filteredFruits = fruits.filter(fruit =>
-        fruit.toLowerCase().includes(inputValue.toLowerCase())
-      );
+      const filteredFruits = inputValue.trim() === '' 
+        ? fruits 
+        : fruits.filter(fruit =>
+            fruit.toLowerCase().includes(inputValue.toLowerCase())
+          );
       setSuggestions(filteredFruits);
     }, 300);
 
