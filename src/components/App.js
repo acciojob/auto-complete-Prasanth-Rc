@@ -1,10 +1,9 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import './../styles/App.css';
 
-const fruits = ["apple", "banana", "cherry", "date", "elderberry", "fig"];
-
-const AutoComplete = () => {
+const App = () => {
+  const fruits = ["apple", "banana", "cherry", "date", "elderberry", "fig"];
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -12,7 +11,6 @@ const AutoComplete = () => {
   const suggestionsRef = useRef(null);
 
   useEffect(() => {
-    // Debounce the search to prevent UI freezes
     const timer = setTimeout(() => {
       if (inputValue.trim() === '') {
         setSuggestions([]);
@@ -24,6 +22,11 @@ const AutoComplete = () => {
       );
       setSuggestions(filteredFruits);
       setActiveSuggestion(0);
+      
+      // Show suggestions when there's input
+      if (inputValue) {
+        setShowSuggestions(true);
+      }
     }, 300);
 
     return () => clearTimeout(timer);
@@ -69,7 +72,9 @@ const AutoComplete = () => {
   };
 
   const handleInputFocus = () => {
-    setShowSuggestions(true);
+    if (inputValue) {
+      setShowSuggestions(true);
+    }
   };
 
   const handleInputBlur = () => {
@@ -79,37 +84,47 @@ const AutoComplete = () => {
   };
 
   return (
-    <div className="autocomplete-container">
-      <input
-        type="text"
-        value={inputValue}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        onFocus={handleInputFocus}
-        onBlur={handleInputBlur}
-        placeholder="Search fruits..."
-        className="autocomplete-input"
-      />
-      {showSuggestions && suggestions.length > 0 && (
-        <ul className="suggestions-list" ref={suggestionsRef}>
-          {suggestions.map((suggestion, index) => (
-            <li
-              key={suggestion}
-              className={`suggestion-item ${index === activeSuggestion ? 'active' : ''}`}
-              onClick={() => handleSuggestionClick(suggestion)}
+    <div>
+        {/* Do not remove the main div */}
+        <div className="autocomplete-container" data-testid="autocomplete">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            placeholder="Search fruits..."
+            className="autocomplete-input"
+            data-testid="autocomplete-input"
+          />
+          {showSuggestions && (
+            <ul 
+              className="suggestions-list" 
+              ref={suggestionsRef}
+              data-testid="suggestions-list"
             >
-              {suggestion}
-            </li>
-          ))}
-        </ul>
-      )}
-      {showSuggestions && inputValue && suggestions.length === 0 && (
-        <div className="no-suggestions">
-          <em>No suggestions found</em>
+              {suggestions.length > 0 ? (
+                suggestions.map((suggestion, index) => (
+                  <li
+                    key={suggestion}
+                    className={`suggestion-item ${index === activeSuggestion ? 'active' : ''}`}
+                    onClick={() => handleSuggestionClick(suggestion)}
+                    data-testid={`suggestion-item-${index}`}
+                  >
+                    {suggestion}
+                  </li>
+                ))
+              ) : (
+                <div className="no-suggestions" data-testid="no-suggestions">
+                  <em>No suggestions found</em>
+                </div>
+              )}
+            </ul>
+          )}
         </div>
-      )}
     </div>
-  );
-};
+  )
+}
 
-export default AutoComplete;
+export default App;
